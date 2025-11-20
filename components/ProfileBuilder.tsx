@@ -423,52 +423,21 @@ export default function ProfileBuilder({ onSave, initialData }: ProfileBuilderPr
 }
 
 function CardPreview({ profile }: { profile: ProfileData }) {
+  const templateName = (profile.template as TemplateName) || 'minimal';
+  
+  // Use the actual template components for preview
+  const templateProps = { 
+    profile: profile as any, 
+    cardUrl: undefined 
+  };
+
   return (
-    <div className="bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-900 dark:to-gray-800 rounded-xl p-8">
-      <div className="text-center">
-        {profile.avatar && (
-          <img
-            src={profile.avatar}
-            alt={profile.name || 'Avatar'}
-            className="w-24 h-24 rounded-full mx-auto mb-4 border-4 border-white dark:border-gray-700"
-          />
-        )}
-        <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-1">
-          {profile.name || 'Your Name'}
-        </h3>
-        {profile.title && (
-          <p className="text-gray-600 dark:text-gray-400 mb-4">{profile.title}</p>
-        )}
-        {profile.bio && (
-          <p className="text-sm text-gray-600 dark:text-gray-400 mb-6">{profile.bio}</p>
-        )}
-        <div className="flex flex-wrap justify-center gap-3">
-          {profile.website && (
-            <a
-              href={profile.website}
-              className="px-4 py-2 bg-white dark:bg-gray-700 rounded-lg text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600"
-            >
-              Website
-            </a>
-          )}
-          {profile.twitter && (
-            <a
-              href={`https://twitter.com/${profile.twitter.replace('@', '')}`}
-              className="px-4 py-2 bg-white dark:bg-gray-700 rounded-lg text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600"
-            >
-              Twitter
-            </a>
-          )}
-          {profile.github && (
-            <a
-              href={`https://github.com/${profile.github}`}
-              className="px-4 py-2 bg-white dark:bg-gray-700 rounded-lg text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600"
-            >
-              GitHub
-            </a>
-          )}
-        </div>
-      </div>
+    <div className="transform scale-[0.7] origin-top -mt-8">
+      {templateName === 'corporate' && <CorporateTemplate {...templateProps} />}
+      {templateName === 'creative' && <CreativeTemplate {...templateProps} />}
+      {templateName === 'dark' && <DarkTemplate {...templateProps} />}
+      {templateName === 'gradient' && <GradientTemplate {...templateProps} />}
+      {(templateName === 'minimal' || !templateName) && <MinimalTemplate {...templateProps} />}
     </div>
   );
 }
