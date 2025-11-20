@@ -1,56 +1,26 @@
 'use client';
 
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { createAppKit } from '@reown/appkit/react';
-import { WagmiAdapter } from '@reown/appkit-adapter-wagmi';
-import { mainnet, sepolia } from 'viem/chains';
-import { WagmiProvider } from 'wagmi';
-import { createConfig, http } from 'wagmi';
-import { useEffect, useState } from 'react';
+import { cookieStorage, createStorage, http } from "@wagmi/core";
+import { WagmiAdapter } from "@reown/appkit-adapter-wagmi";
+import { mainnet, arbitrum } from "@reown/appkit/networks";
 
-const projectId = process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID || 'demo-project-id';
+// Get projectId from https://dashboard.reown.com
+export const projectId = process.env.NEXT_PUBLIC_PROJECT_ID;
 
-const metadata = {
-  name: 'OnChain Naming',
-  description: 'Buy and manage ENS domains',
-  url: 'https://onchain-naming.vercel.app',
-  icons: ['https://avatars.githubusercontent.com/u/37784886'],
-};
-
-const wagmiAdapter = new WagmiAdapter({
-  networks: [mainnet, sepolia],
-  projectId,
-});
-
-const wagmiConfig = wagmiAdapter.wagmiConfig;
-
-createAppKit({
-  adapters: [wagmiAdapter],
-  networks: [mainnet, sepolia],
-  projectId,
-  metadata,
-  features: {
-    analytics: true,
-  },
-});
-
-const queryClient = new QueryClient();
-
-export function Providers({ children }: { children: React.ReactNode }) {
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  if (!mounted) {
-    return <>{children}</>;
-  }
-
-  return (
-    <WagmiProvider config={wagmiConfig}>
-      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-    </WagmiProvider>
-  );
+if (!projectId) {
+  throw new Error("Project ID is not defined");
 }
 
+export const networks = [mainnet, arbitrum];
+
+//Set up the Wagmi Adapter (Config)
+export const wagmiAdapter = new WagmiAdapter({
+  storage: createStorage({
+    storage: cookieStorage,
+  }),
+  ssr: true,
+  projectId,
+  networks,
+});
+
+export const config = wagmiAdapter.wagmiConfig;
