@@ -1,46 +1,60 @@
-import { verifyMessage } from 'viem';
+import { SiweMessage } from 'siwe';
+import { getAddress } from 'viem';
 
-/**
- * Generate authentication message for wallet signature
- */
-export function generateAuthMessage(address: string, nonce: string): string {
-  return `Welcome to OnChain Naming!
-
-Please sign this message to authenticate your wallet.
-
-Wallet: ${address}
-Nonce: ${nonce}
-Timestamp: ${new Date().toISOString()}
-
-This request will not trigger a blockchain transaction or cost any gas fees.`;
+export interface AuthMessage {
+  message: string;
+  signature: `0x${string}`;
+  address: string;
 }
 
 /**
- * Verify wallet signature
+ * Create SIWE message for authentication
  */
-export async function verifyWalletSignature(
+export function createAuthMessage(address: string, nonce: string): string {
+  const domain = process.env.NEXT_PUBLIC_DOMAIN || 'localhost:3000';
+  const origin = process.env.NEXT_PUBLIC_ORIGIN || 'http://localhost:3000';
+
+  const message = new SiweMessage({
+    domain,
+    address: getAddress(address),
+    statement: 'Sign in to OnChain Naming',
+    uri: origin,
+    version: '1',
+    chainId: 1,
+    nonce,
+  });
+
+  return message.prepareMessage();
+}
+
+/**
+ * Verify SIWE message
+ */
+export async function verifyAuthMessage(
   message: string,
-  signature: string,
+  signature: `0x${string}`,
   address: string
 ): Promise<boolean> {
   try {
-    const valid = await verifyMessage({
-      address: address as `0x${string}`,
-      message,
-      signature: signature as `0x${string}`,
+    const siweMessage = new SiweMessage(message);
+    const fields = await siweMessage.verify({
+      signature,
     });
-    return valid;
+
+    return (
+      fields.data.address.toLowerCase() === address.toLowerCase() &&
+      fields.success
+    );
   } catch (error) {
-    console.error('Error verifying signature:', error);
+    console.error('Error verifying auth message:', error);
     return false;
   }
 }
 
 /**
- * Generate random nonce for authentication
+ * Generate nonce for authentication
  */
 export function generateNonce(): string {
   return Math.random().toString(36).substring(2, 15) + 
          Math.random().toString(36).substring(2, 15);
 }
-

@@ -1,6 +1,5 @@
-import { createPublicClient, http } from 'viem';
+import { createPublicClient, http, normalize } from 'viem';
 import { mainnet } from 'viem/chains';
-import { normalize } from 'viem/ens';
 
 const publicClient = createPublicClient({
   chain: mainnet,
@@ -8,30 +7,28 @@ const publicClient = createPublicClient({
 });
 
 export interface ENSProfile {
-  name: string | null;
-  address: string;
-  avatar?: string | null;
-  description?: string | null;
-  email?: string | null;
-  url?: string | null;
-  twitter?: string | null;
-  github?: string | null;
-  telegram?: string | null;
-  discord?: string | null;
+  name?: string;
+  avatar?: string;
+  email?: string;
+  url?: string;
+  twitter?: string;
+  github?: string;
+  description?: string;
+  [key: string]: string | undefined;
 }
 
 /**
  * Resolve ENS name to address
  */
-export async function resolveENSName(name: string): Promise<string | null> {
+export async function resolveENS(ensName: string): Promise<string | null> {
   try {
-    const normalizedName = normalize(name);
+    const normalized = normalize(ensName);
     const address = await publicClient.getEnsAddress({
-      name: normalizedName,
+      name: normalized,
     });
     return address;
   } catch (error) {
-    console.error('Error resolving ENS name:', error);
+    console.error('Error resolving ENS:', error);
     return null;
   }
 }
@@ -39,14 +36,14 @@ export async function resolveENSName(name: string): Promise<string | null> {
 /**
  * Resolve address to ENS name
  */
-export async function resolveENSAddress(address: string): Promise<string | null> {
+export async function resolveAddress(address: `0x${string}`): Promise<string | null> {
   try {
     const name = await publicClient.getEnsName({
-      address: address as `0x${string}`,
+      address,
     });
     return name;
   } catch (error) {
-    console.error('Error resolving ENS address:', error);
+    console.error('Error resolving address:', error);
     return null;
   }
 }
@@ -54,11 +51,11 @@ export async function resolveENSAddress(address: string): Promise<string | null>
 /**
  * Get ENS avatar
  */
-export async function getENSAvatar(name: string): Promise<string | null> {
+export async function getENSAvatar(ensName: string): Promise<string | null> {
   try {
-    const normalizedName = normalize(name);
+    const normalized = normalize(ensName);
     const avatar = await publicClient.getEnsAvatar({
-      name: normalizedName,
+      name: normalized,
     });
     return avatar;
   } catch (error) {
@@ -70,83 +67,70 @@ export async function getENSAvatar(name: string): Promise<string | null> {
 /**
  * Get ENS text records
  */
-export async function getENSTextRecord(
-  name: string,
-  key: string
-): Promise<string | null> {
+export async function getENSTextRecords(ensName: string): Promise<ENSProfile> {
   try {
-    const normalizedName = normalize(name);
-    const text = await publicClient.getEnsText({
-      name: normalizedName,
-      key,
-    });
-    return text;
+    const normalized = normalize(ensName);
+    const profile: ENSProfile = {};
+
+    // Common text record keys
+    const textRecordKeys = [
+      'email',
+      'url',
+      'avatar',
+      'description',
+      'com.twitter',
+      'com.github',
+      'com.linkedin',
+      'com.discord',
+      'org.telegram',
+    ];
+
+    for (const key of textRecordKeys) {
+      try {
+        const value = await publicClient.getEnsText({
+          name: normalized,
+          key,
+        });
+        if (value) {
+          // Map common keys to our profile structure
+          if (key === 'com.twitter') {
+            profile.twitter = value;
+          } else if (key === 'com.github') {
+            profile.github = value;
+          } else {
+            profile[key] = value;
+          }
+        }
+      } catch (err) {
+        // Continue if one text record fails
+        continue;
+      }
+    }
+
+    // Get avatar separately
+    const avatar = await getENSAvatar(normalized);
+    if (avatar) {
+      profile.avatar = avatar;
+    }
+
+    profile.name = normalized;
+
+    return profile;
   } catch (error) {
-    console.error(`Error getting ENS text record for ${key}:`, error);
-    return null;
+    console.error('Error getting ENS text records:', error);
+    return {};
   }
 }
 
 /**
- * Get full ENS profile with all available data
+ * Generate slug from ENS name or address
  */
-export async function getENSProfile(nameOrAddress: string): Promise<ENSProfile | null> {
-  try {
-    let ensName: string | null = null;
-    let address: string | null = null;
-
-    // Check if input is an address or ENS name
-    if (nameOrAddress.startsWith('0x')) {
-      address = nameOrAddress;
-      ensName = await resolveENSAddress(address);
-    } else {
-      ensName = nameOrAddress;
-      address = await resolveENSName(ensName);
-    }
-
-    if (!address || !ensName) {
-      return null;
-    }
-
-    // Fetch all text records in parallel
-    const [avatar, description, email, url, twitter, github, telegram, discord] =
-      await Promise.all([
-        getENSAvatar(ensName),
-        getENSTextRecord(ensName, 'description'),
-        getENSTextRecord(ensName, 'email'),
-        getENSTextRecord(ensName, 'url'),
-        getENSTextRecord(ensName, 'com.twitter'),
-        getENSTextRecord(ensName, 'com.github'),
-        getENSTextRecord(ensName, 'org.telegram'),
-        getENSTextRecord(ensName, 'com.discord'),
-      ]);
-
-    return {
-      name: ensName,
-      address,
-      avatar,
-      description,
-      email,
-      url,
-      twitter,
-      github,
-      telegram,
-      discord,
-    };
-  } catch (error) {
-    console.error('Error getting ENS profile:', error);
-    return null;
+export function generateSlug(ensName?: string, address?: string): string {
+  if (ensName) {
+    return ensName.toLowerCase().replace(/\.eth$/, '').replace(/[^a-z0-9]/g, '');
   }
-}
-
-/**
- * Generate unique slug from ENS name or wallet address
- */
-export function generateSlug(ensNameOrAddress: string): string {
-  if (ensNameOrAddress.endsWith('.eth')) {
-    return ensNameOrAddress.replace('.eth', '').toLowerCase();
+  if (address) {
+    return address.toLowerCase().slice(2, 10); // First 8 chars of address
   }
-  // For addresses, use first 8 chars
-  return ensNameOrAddress.slice(0, 10).toLowerCase();
+  throw new Error('Either ensName or address must be provided');
 }
-
