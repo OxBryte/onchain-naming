@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useAccount } from 'wagmi';
-import { ConnectButton } from '@reown/appkit/react';
+import { App } from '@reown/appkit/react';
 
 interface DomainRegistrationProps {
   domainName: string;
