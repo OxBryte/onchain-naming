@@ -127,10 +127,13 @@ export async function getENSTextRecords(ensName: string): Promise<ENSProfile> {
  */
 export function generateSlug(ensName?: string, address?: string): string {
   if (ensName) {
-    return ensName.toLowerCase().replace(/\.eth$/, '').replace(/[^a-z0-9]/g, '');
+    // Remove .eth suffix and clean up
+    const cleaned = ensName.toLowerCase().replace(/\.eth$/, '').replace(/[^a-z0-9]/g, '');
+    return cleaned || `ens-${Date.now()}`;
   }
   if (address) {
-    return address.toLowerCase().slice(2, 10); // First 8 chars of address
+    // Use first 8 chars of address (without 0x)
+    return address.toLowerCase().slice(2, 10);
   }
   throw new Error('Either ensName or address must be provided');
 }

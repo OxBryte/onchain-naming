@@ -98,10 +98,10 @@ export default function Home() {
               </svg>
             </div>
             <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">
-              Fast Registration
+              ENS Identity
             </h3>
             <p className="text-gray-600 dark:text-gray-400">
-              Register ENS domains quickly and securely with your Web3 wallet
+              Sign up with your ENS domain or wallet address. We automatically load your ENS profile data.
             </p>
           </div>
 
@@ -117,15 +117,15 @@ export default function Home() {
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   strokeWidth={2}
-                  d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                  d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0"
                 />
               </svg>
             </div>
             <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">
-              Secure Storage
+              Shareable Card
             </h3>
             <p className="text-gray-600 dark:text-gray-400">
-              Your domain data is stored securely in MongoDB with encryption
+              Get a unique URL and QR code for your digital card. Share it anywhere, anytime.
             </p>
           </div>
 
@@ -141,15 +141,15 @@ export default function Home() {
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   strokeWidth={2}
-                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                  d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"
                 />
               </svg>
             </div>
             <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">
-              Custom Metadata
+              NFC Cards Coming Soon
             </h3>
             <p className="text-gray-600 dark:text-gray-400">
-              Store custom information like email, bio, social links, and more
+              Order a physical NFC-enabled card that opens your digital profile when tapped.
             </p>
           </div>
         </div>
