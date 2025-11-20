@@ -13,17 +13,26 @@ A Web3-native platform for creating and sharing digital business cards linked to
 - **Analytics Dashboard**: Track views and manage your profile
 - **MongoDB Storage**: Secure profile storage with MongoDB
 
-### 🚧 Phase 2 (Coming Soon)
-- Multiple card templates/themes
+### ✅ Phase 2 - Completed
+- **Multiple Card Templates**: Choose from 5 beautiful themes:
+  - **Minimal**: Clean and simple design with blue/purple gradients
+  - **Corporate**: Professional business style with gray tones
+  - **Creative**: Bold and colorful with vibrant gradients
+  - **Dark Mode**: Modern dark theme with indigo accents
+  - **Gradient**: Vibrant gradient design with purple/pink/red colors
+- **Template Selection**: Easy template picker in profile builder with live preview
+- **Template System**: Extensible architecture for adding new templates
+
+### 🚧 Phase 3 (Coming Soon)
 - ENS-NFT minting for card ownership
 - Advanced analytics (location, device tracking)
 
-### 🔮 Phase 3 (Future)
+### 🔮 Phase 4 (Future)
 - Physical NFC card ordering integration
 - Print-on-demand API integration
 - Custom domain mapping (Pro feature)
 
-### 💳 Phase 4 (Future)
+### 💳 Phase 5 (Future)
 - Crypto-backed payment cards
 - USDC/USDT prepaid card integration
 - KYC/Compliance features
@@ -98,10 +107,18 @@ onchain-naming/
 ├── components/
 │   ├── DigitalCard.tsx   # Card display component
 │   ├── ProfileBuilder.tsx # Profile editor
-│   └── DomainSearch.tsx   # ENS domain search
+│   ├── DomainSearch.tsx   # ENS domain search
+│   └── card-templates/   # Card template components
+│       ├── MinimalTemplate.tsx
+│       ├── CorporateTemplate.tsx
+│       ├── CreativeTemplate.tsx
+│       ├── DarkTemplate.tsx
+│       ├── GradientTemplate.tsx
+│       └── types.ts
 ├── lib/
 │   ├── ens.ts            # ENS resolution utilities
 │   ├── auth.ts           # SIWE authentication
+│   ├── templates.ts     # Template configuration
 │   └── mongodb.ts        # MongoDB connection
 ├── models/
 │   ├── Profile.ts        # Profile schema
@@ -117,9 +134,22 @@ onchain-naming/
 2. **Build Profile**: Go to Dashboard and fill in your profile information
    - ENS data is automatically loaded if you have an ENS domain
    - Add social links, contact info, and custom links
-3. **Preview**: See your card in real-time as you edit
+   - **Choose a Template**: Select from 5 beautiful card templates (Minimal, Corporate, Creative, Dark, Gradient)
+3. **Preview**: See your card in real-time as you edit with live template preview
 4. **Publish**: Click "Publish Card" to make it publicly accessible
 5. **Share**: Copy your card URL or download the QR code
+
+### Customizing Your Card Template
+
+The platform includes 5 pre-built templates:
+
+- **Minimal** (`minimal`): Default template with clean blue/purple gradients
+- **Corporate** (`corporate`): Professional gray-toned design perfect for business
+- **Creative** (`creative`): Bold and colorful with pink/orange gradients
+- **Dark Mode** (`dark`): Modern dark theme with indigo accents
+- **Gradient** (`gradient`): Vibrant purple/pink/red gradient background
+
+You can switch templates anytime in the profile builder, and the preview updates instantly. Each template maintains your profile data while changing the visual style.
 
 ### API Endpoints
 
