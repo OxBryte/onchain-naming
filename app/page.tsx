@@ -1,47 +1,13 @@
 "use client";
 
-import { useState } from "react";
-import DomainSearch from "@/components/DomainSearch";
-import DomainRegistration from "@/components/DomainRegistration";
+import { useRouter } from "next/navigation";
 import { useAppKit } from "@reown/appkit/react";
+import { useAccount } from "wagmi";
+
 export default function Home() {
-  const [selectedDomain, setSelectedDomain] = useState<string | null>(null);
-  const [selectedAddress, setSelectedAddress] = useState<string | null>(null);
+  const router = useRouter();
   const { open } = useAppKit();
-  const handleDomainSelect = (domain: string, address: string | null) => {
-    setSelectedDomain(domain);
-    setSelectedAddress(address);
-  };
-
-  const handleRegister = async (
-    domain: string,
-    metadata: Record<string, string>,
-    ownerAddress: string
-  ) => {
-    try {
-      const response = await fetch("/api/domains/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          domainName: domain,
-          ownerAddress,
-          metadata,
-        }),
-      });
-
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || "Failed to register domain");
-      }
-
-      const data = await response.json();
-      return data;
-    } catch (error) {
-      throw error;
-    }
-  };
+  const { address, isConnected } = useAccount();
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
@@ -53,7 +19,28 @@ export default function Home() {
               OnChain Naming
             </h1>
           </div>
-          <button onClick={() => open({})}>Connect Wallet</button>
+          <div className="flex items-center gap-4">
+            {isConnected ? (
+              <>
+                <span className="text-sm text-gray-600 dark:text-gray-400 font-mono">
+                  {address?.slice(0, 6)}...{address?.slice(-4)}
+                </span>
+                <button
+                  onClick={() => router.push('/dashboard')}
+                  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-colors"
+                >
+                  Dashboard
+                </button>
+              </>
+            ) : (
+              <button
+                onClick={() => open({})}
+                className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-colors"
+              >
+                Connect Wallet
+              </button>
+            )}
+          </div>
         </div>
       </header>
 
@@ -61,28 +48,36 @@ export default function Home() {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="text-center mb-12">
           <h2 className="text-5xl md:text-6xl font-bold text-gray-900 dark:text-gray-100 mb-6">
-            Own Your Digital Identity
+            Your Universal Business Card
           </h2>
-          <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-400 mb-8 max-w-2xl mx-auto">
-            Register ENS domains and store your custom metadata securely
-            on-chain and in our database
+          <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-400 mb-8 max-w-3xl mx-auto">
+            Create a beautiful digital card linked to your ENS domain. Share your identity with a simple link or QR code. 
+            Physical NFC cards coming soon.
           </p>
-        </div>
-
-        {/* Domain Search */}
-        <div className="flex justify-center mb-12">
-          <DomainSearch onDomainSelect={handleDomainSelect} />
-        </div>
-
-        {/* Domain Registration Form */}
-        {selectedDomain && (
-          <div className="max-w-2xl mx-auto">
-            <DomainRegistration
-              domainName={selectedDomain}
-              onRegister={handleRegister}
-            />
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            {isConnected ? (
+              <button
+                onClick={() => router.push('/dashboard')}
+                className="px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-semibold text-lg transition-colors"
+              >
+                Go to Dashboard
+              </button>
+            ) : (
+              <button
+                onClick={() => open({})}
+                className="px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-semibold text-lg transition-colors"
+              >
+                Get Started
+              </button>
+            )}
+            <button
+              onClick={() => router.push('/card/vitalik')}
+              className="px-8 py-4 bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 rounded-xl font-semibold text-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+            >
+              View Example
+            </button>
           </div>
-        )}
+        </div>
 
         {/* Features Section */}
         <div className="mt-24 grid grid-cols-1 md:grid-cols-3 gap-8">
