@@ -6,7 +6,7 @@ import { ConnectButton } from '@reown/appkit/react';
 
 interface DomainRegistrationProps {
   domainName: string;
-  onRegister: (domain: string, metadata: Record<string, any>) => Promise<void>;
+  onRegister: (domain: string, metadata: Record<string, any>, ownerAddress: string) => Promise<void>;
 }
 
 export default function DomainRegistration({ domainName, onRegister }: DomainRegistrationProps) {
@@ -39,7 +39,7 @@ export default function DomainRegistration({ domainName, onRegister }: DomainReg
         Object.entries(metadata).filter(([_, value]) => value.trim() !== '')
       );
 
-      await onRegister(domainName, filteredMetadata);
+      await onRegister(domainName, filteredMetadata, address);
       setSuccess(true);
       setMetadata({ email: '', name: '', bio: '', website: '', twitter: '' });
     } catch (err) {

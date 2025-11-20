@@ -14,7 +14,7 @@ export default function Home() {
     setSelectedAddress(address);
   };
 
-  const handleRegister = async (domain: string, metadata: Record<string, any>) => {
+  const handleRegister = async (domain: string, metadata: Record<string, any>, ownerAddress: string) => {
     try {
       const response = await fetch('/api/domains/register', {
         method: 'POST',
@@ -23,6 +23,7 @@ export default function Home() {
         },
         body: JSON.stringify({
           domainName: domain,
+          ownerAddress,
           metadata,
         }),
       });

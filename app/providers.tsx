@@ -22,14 +22,7 @@ const wagmiAdapter = new WagmiAdapter({
   projectId,
 });
 
-const wagmiConfig = createConfig({
-  chains: [mainnet, sepolia],
-  transports: {
-    [mainnet.id]: http(),
-    [sepolia.id]: http(),
-  },
-  adapters: [wagmiAdapter],
-});
+const wagmiConfig = wagmiAdapter.wagmiConfig;
 
 createAppKit({
   adapters: [wagmiAdapter],
