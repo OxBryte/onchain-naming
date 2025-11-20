@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useAccount } from 'wagmi';
-import { AppKit } from '@reown/appkit/react';
+import { AppKit, useAppKit } from '@reown/appkit/react';
 
 interface DomainRegistrationProps {
   domainName: string;
@@ -10,6 +10,8 @@ interface DomainRegistrationProps {
 }
 
 export default function DomainRegistration({ domainName, onRegister }: DomainRegistrationProps) {
+
+  const { open, close } = useAppKit();
   const { address, isConnected } = useAccount();
   const [metadata, setMetadata] = useState({
     email: '',
