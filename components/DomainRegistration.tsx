@@ -2,11 +2,11 @@
 
 import { useState } from 'react';
 import { useAccount } from 'wagmi';
-import { AppKit, useAppKit } from '@reown/appkit/react';
+import { useAppKit } from '@reown/appkit/react';
 
 interface DomainRegistrationProps {
   domainName: string;
-  onRegister: (domain: string, metadata: Record<string, any>, ownerAddress: string) => Promise<void>;
+  onRegister: (domain: string, metadata: Record<string, string>, ownerAddress: string) => Promise<void>;
 }
 
 export default function DomainRegistration({ domainName, onRegister }: DomainRegistrationProps) {
