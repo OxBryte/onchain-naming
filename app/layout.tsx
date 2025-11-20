@@ -3,7 +3,6 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Providers from "./providers";
 import { headers } from "next/headers";
-import { AppKit } from "@reown/appkit/react";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -35,7 +34,6 @@ export default async function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Providers cookies={cookies}>{children}</Providers>
-        <AppKit modal={modal} />
       </body>
     </html>
   );
