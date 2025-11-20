@@ -5,6 +5,11 @@ import { useAccount, useEnsName, useEnsAvatar } from 'wagmi';
 import { useAppKit } from '@reown/appkit/react';
 import { normalize } from 'viem/ens';
 import { templates, TemplateName } from '@/lib/templates';
+import { MinimalTemplate } from './card-templates/MinimalTemplate';
+import { CorporateTemplate } from './card-templates/CorporateTemplate';
+import { CreativeTemplate } from './card-templates/CreativeTemplate';
+import { DarkTemplate } from './card-templates/DarkTemplate';
+import { GradientTemplate } from './card-templates/GradientTemplate';
 
 interface ProfileData {
   name?: string;
