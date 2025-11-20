@@ -1,20 +1,19 @@
 'use client';
 
 import { useState } from 'react';
-import { ConnectButton } from '@reown/appkit/react';
 import DomainSearch from '@/components/DomainSearch';
 import DomainRegistration from '@/components/DomainRegistration';
-
+import { useAppKit } from '@reown/appkit/react';
 export default function Home() {
   const [selectedDomain, setSelectedDomain] = useState<string | null>(null);
   const [selectedAddress, setSelectedAddress] = useState<string | null>(null);
-
+  const { open } = useAppKit();
   const handleDomainSelect = (domain: string, address: string | null) => {
     setSelectedDomain(domain);
     setSelectedAddress(address);
   };
 
-  const handleRegister = async (domain: string, metadata: Record<string, any>, ownerAddress: string) => {
+  const handleRegister = async (domain: string, metadata: Record<string, string>, ownerAddress: string) => {
     try {
       const response = await fetch('/api/domains/register', {
         method: 'POST',
@@ -50,7 +49,7 @@ export default function Home() {
               OnChain Naming
             </h1>
           </div>
-          <ConnectButton />
+          <button onClick={() => open({})}>Connect Wallet</button>
         </div>
       </header>
 
