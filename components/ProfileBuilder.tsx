@@ -413,7 +413,9 @@ export default function ProfileBuilder({ onSave, initialData }: ProfileBuilderPr
           <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-gray-100">
             Live Preview
           </h3>
-          <CardPreview profile={profile} />
+          <div className="overflow-auto max-h-[600px]">
+            <CardPreview profile={profile} />
+          </div>
         </div>
       </div>
     </div>
