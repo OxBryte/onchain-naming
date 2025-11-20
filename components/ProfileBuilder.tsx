@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useAccount, useEnsName, useEnsAvatar } from 'wagmi';
 import { useAppKit } from '@reown/appkit/react';
 import { normalize } from 'viem/ens';
+import { templates, TemplateName } from '@/lib/templates';
 
 interface ProfileData {
   name?: string;
