@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { useAccount } from 'wagmi';
 import { useAppKit, useAppKitAccount } from '@reown/appkit/react';
 
 interface DomainRegistrationProps {
