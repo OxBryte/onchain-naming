@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import Profile from '@/models/Profile';
-import { getENSTextRecords, generateSlug } from '@/lib/ens';
+import { generateSlug } from '@/lib/ens';
 
 export async function GET(request: NextRequest) {
   try {
