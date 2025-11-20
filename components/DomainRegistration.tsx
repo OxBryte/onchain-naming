@@ -11,7 +11,7 @@ interface DomainRegistrationProps {
 
 export default function DomainRegistration({ domainName, onRegister }: DomainRegistrationProps) {
 
-  const { open, close } = useAppKit();
+  const { open } = useAppKit();
   const { address, isConnected } = useAccount();
   const [metadata, setMetadata] = useState({
     email: '',
@@ -60,7 +60,7 @@ export default function DomainRegistration({ domainName, onRegister }: DomainReg
         <p className="text-gray-600 dark:text-gray-400 mb-4">
           Connect your wallet to register this domain and save your information.
         </p>
-        <ConnectButton />
+        <button onClick={() => open({})}>Connect Wallet</button>
       </div>
     );
   }
