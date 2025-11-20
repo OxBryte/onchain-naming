@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import DomainSearch from '@/components/DomainSearch';
-import DomainRegistration from '@/components/DomainRegistration';
-import { useAppKit } from '@reown/appkit/react';
+import { useState } from "react";
+import DomainSearch from "@/components/DomainSearch";
+import DomainRegistration from "@/components/DomainRegistration";
+import { useAppKit } from "@reown/appkit/react";
 export default function Home() {
   const [selectedDomain, setSelectedDomain] = useState<string | null>(null);
   const [selectedAddress, setSelectedAddress] = useState<string | null>(null);
@@ -13,12 +13,16 @@ export default function Home() {
     setSelectedAddress(address);
   };
 
-  const handleRegister = async (domain: string, metadata: Record<string, string>, ownerAddress: string) => {
+  const handleRegister = async (
+    domain: string,
+    metadata: Record<string, string>,
+    ownerAddress: string
+  ) => {
     try {
-      const response = await fetch('/api/domains/register', {
-        method: 'POST',
+      const response = await fetch("/api/domains/register", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           domainName: domain,
@@ -29,7 +33,7 @@ export default function Home() {
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.message || 'Failed to register domain');
+        throw new Error(error.message || "Failed to register domain");
       }
 
       const data = await response.json();
@@ -60,7 +64,8 @@ export default function Home() {
             Own Your Digital Identity
           </h2>
           <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-400 mb-8 max-w-2xl mx-auto">
-            Register ENS domains and store your custom metadata securely on-chain and in our database
+            Register ENS domains and store your custom metadata securely
+            on-chain and in our database
           </p>
         </div>
 
@@ -72,7 +77,10 @@ export default function Home() {
         {/* Domain Registration Form */}
         {selectedDomain && (
           <div className="max-w-2xl mx-auto">
-            <DomainRegistration domainName={selectedDomain} onRegister={handleRegister} />
+            <DomainRegistration
+              domainName={selectedDomain}
+              onRegister={handleRegister}
+            />
           </div>
         )}
 
