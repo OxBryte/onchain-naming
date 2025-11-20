@@ -1,26 +1,59 @@
-'use client';
+"use client";
 
-import { cookieStorage, createStorage, http } from "@wagmi/core";
-import { WagmiAdapter } from "@reown/appkit-adapter-wagmi";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { createAppKit } from "@reown/appkit/react";
 import { mainnet, arbitrum } from "@reown/appkit/networks";
+import React, { type ReactNode } from "react";
+import { cookieToInitialState, WagmiProvider, type Config } from "wagmi";
+import { projectId, wagmiAdapter } from "./api/wagmi.provider";
 
-// Get projectId from https://dashboard.reown.com
-export const projectId = process.env.NEXT_PUBLIC_PROJECT_ID;
+// Set up queryClient
+const queryClient = new QueryClient();
 
 if (!projectId) {
   throw new Error("Project ID is not defined");
 }
 
-export const networks = [mainnet, arbitrum];
+// Set up metadata
+const metadata = {
+  name: "onchain-naming",
+  description: "OnChain Naming",
+  url: "https://onchain-naming.com", // origin must match your domain & subdomain
+  icons: ["https://onchain-naming.com/icon.png"],
+};
 
-//Set up the Wagmi Adapter (Config)
-export const wagmiAdapter = new WagmiAdapter({
-  storage: createStorage({
-    storage: cookieStorage,
-  }),
-  ssr: true,
+// Create the modal
+const modal = createAppKit({
+  adapters: [wagmiAdapter],
   projectId,
-  networks,
+  networks: [mainnet, arbitrum],
+  defaultNetwork: mainnet,
+  metadata: metadata,
+  features: {
+    analytics: true, // Optional - defaults to your Cloud configuration
+  },
 });
 
-export const config = wagmiAdapter.wagmiConfig;
+function ContextProvider({
+  children,
+  cookies,
+}: {
+  children: ReactNode;
+  cookies: string | null;
+}) {
+  const initialState = cookieToInitialState(
+    wagmiAdapter.wagmiConfig as Config,
+    cookies
+  );
+
+  return (
+    <WagmiProvider
+      config={wagmiAdapter.wagmiConfig as Config}
+      initialState={initialState}
+    >
+      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    </WagmiProvider>
+  );
+}
+
+export default ContextProvider;

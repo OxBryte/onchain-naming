@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
+import { headers } from "next/headers";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -18,17 +19,22 @@ export const metadata: Metadata = {
   description: "Register and manage ENS domains with custom metadata storage",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
+    const headersObj = await headers();
+    const cookies = headersObj.get("cookie"); 
+
   return (
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Providers>{children}</Providers>
+        <Providers cookies={cookies}>{children}</Providers>
+        <AppKit modal={modal} />
       </body>
     </html>
   );
